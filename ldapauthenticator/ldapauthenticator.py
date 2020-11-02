@@ -234,7 +234,13 @@ class LDAPAuthenticator(Authenticator):
         help="""
         Comma separated address:port of the LDAP server which can be tried to contact when
         primary LDAP server is unavailable.
-
+        """,
+    )
+    connect_timeout = Int(
+        config=True,
+        default=15,
+        help="""
+        LDAP client connect timeout (seconds)
         """,
     )
 
@@ -332,7 +338,8 @@ class LDAPAuthenticator(Authenticator):
 
     def _get_real_connection(self, userdn, password, server_address, server_port):
         server = ldap3.Server(
-            server_address, port=server_port, use_ssl=self.use_ssl
+            server_address, port=server_port, use_ssl=self.use_ssl,
+            connect_timeout=self.connect_timeout
         )
         auto_bind = (
             ldap3.AUTO_BIND_NO_TLS if self.use_ssl else ldap3.AUTO_BIND_TLS_BEFORE_BIND
