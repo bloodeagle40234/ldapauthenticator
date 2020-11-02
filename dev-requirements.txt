@@ -11,3 +11,4 @@ pytest-cov
 pytest>=3.3
 requests-mock
 virtualenv
+psutil

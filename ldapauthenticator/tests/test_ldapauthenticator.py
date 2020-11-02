@@ -1,5 +1,15 @@
 # Inspired by https://github.com/jupyterhub/jupyterhub/blob/master/jupyterhub/tests/test_auth.py
 
+import psutil
+import random
+
+
+def unused_port():
+    while True:
+        port = random.randint(1024, 65534)
+        if port not in psutil.net_connections():
+            return port
+
 
 async def test_ldap_auth_allowed(authenticator):
     # proper username and password in allowed group
@@ -100,3 +110,21 @@ async def test_ldap_auth_state_attributes(authenticator):
     )
     assert authorized["name"] == "fry"
     assert authorized["auth_state"] == {"employeeType": ["Delivery boy"]}
+
+
+async def test_ldap_auth_redirects(authenticator, mocker):
+    # set non-available port
+    authenticator.server_port = unused_port()
+
+    async def _test_ldap_redirect(uri_pattern):
+        authenticator.secondary_uri = uri_pattern
+        authorized = await authenticator.get_authenticated_user(
+            None, {"username": "fry", "password": "fry"}
+        )
+        assert authorized["name"] == "fry"
+
+    await _test_ldap_redirect("localhost")
+    await _test_ldap_redirect("unavailable,localhost:636")
+    await _test_ldap_redirect("unavailable, localhost:636")
+    await _test_ldap_redirect(
+        "unavailable:8080,localhost:8080,localhost:636")
