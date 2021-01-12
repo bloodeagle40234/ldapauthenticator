@@ -112,7 +112,7 @@ async def test_ldap_auth_state_attributes(authenticator):
     assert authorized["auth_state"] == {"employeeType": ["Delivery boy"]}
 
 
-async def test_ldap_auth_redirects(authenticator, mocker):
+async def test_ldap_auth_redirects(authenticator):
     # set non-available port
     correct_server_port = "%s:%s" % (
         authenticator.server_address,
