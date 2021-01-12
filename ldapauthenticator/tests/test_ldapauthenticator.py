@@ -116,7 +116,7 @@ async def test_ldap_auth_redirects(authenticator):
     # set non-available port
     correct_server_port = "%s:%s" % (
         authenticator.server_address,
-        authenticator.server_port,
+        authenticator._server_port_default(),
     )
     authenticator.server_port = unused_port()
 
