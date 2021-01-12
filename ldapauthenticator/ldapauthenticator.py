@@ -327,6 +327,7 @@ class LDAPAuthenticator(Authenticator):
         except (
             ldap3.core.exceptions.LDAPSocketOpenError,
             ldap3.core.exceptions.LDAPBindError,
+            ldap3.core.exceptions.LDAPSocketReceiveError,
         ):
             for server, port in self._get_secondary_servers():
                 try:
@@ -334,6 +335,7 @@ class LDAPAuthenticator(Authenticator):
                 except (
                     ldap3.core.exceptions.LDAPSocketOpenError,
                     ldap3.core.exceptions.LDAPBindError,
+                    ldap3.core.exceptions.LDAPSocketReceiveError,
                 ):
                     continue
             else:
