@@ -322,15 +322,19 @@ class LDAPAuthenticator(Authenticator):
     def get_connection(self, userdn, password):
         try:
             return self._get_real_connection(
-                userdn, password, self.server_address, self.server_port)
-        except (ldap3.core.exceptions.LDAPSocketOpenError,
-                ldap3.core.exceptions.LDAPBindError):
+                userdn, password, self.server_address, self.server_port
+            )
+        except (
+            ldap3.core.exceptions.LDAPSocketOpenError,
+            ldap3.core.exceptions.LDAPBindError,
+        ):
             for server, port in self._get_secondary_servers():
                 try:
-                    return self._get_real_connection(
-                        userdn, password, server, port)
-                except (ldap3.core.exceptions.LDAPSocketOpenError,
-                        ldap3.core.exceptions.LDAPBindError):
+                    return self._get_real_connection(userdn, password, server, port)
+                except (
+                    ldap3.core.exceptions.LDAPSocketOpenError,
+                    ldap3.core.exceptions.LDAPBindError,
+                ):
                     continue
             else:
                 # re-raise the last caught error
@@ -338,8 +342,10 @@ class LDAPAuthenticator(Authenticator):
 
     def _get_real_connection(self, userdn, password, server_address, server_port):
         server = ldap3.Server(
-            server_address, port=server_port, use_ssl=self.use_ssl,
-            connect_timeout=self.connect_timeout
+            server_address,
+            port=server_port,
+            use_ssl=self.use_ssl,
+            connect_timeout=self.connect_timeout,
         )
         auto_bind = (
             ldap3.AUTO_BIND_NO_TLS if self.use_ssl else ldap3.AUTO_BIND_TLS_BEFORE_BIND
@@ -359,7 +365,8 @@ class LDAPAuthenticator(Authenticator):
                     port = int(server_port[1])
                 except ValueError:
                     self.log.warning(
-                        "Invalid port in secondary uri %s, use default" % uri)
+                        "Invalid port in secondary uri %s, use default" % uri
+                    )
                     port = self._server_port_default()
             else:
                 port = self._server_port_default()

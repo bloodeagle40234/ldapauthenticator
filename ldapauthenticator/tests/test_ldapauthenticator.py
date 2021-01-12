@@ -1,7 +1,7 @@
 # Inspired by https://github.com/jupyterhub/jupyterhub/blob/master/jupyterhub/tests/test_auth.py
+import random
 
 import psutil
-import random
 
 
 def unused_port():
@@ -126,5 +126,4 @@ async def test_ldap_auth_redirects(authenticator, mocker):
     await _test_ldap_redirect("localhost")
     await _test_ldap_redirect("unavailable,localhost:636")
     await _test_ldap_redirect("unavailable, localhost:636")
-    await _test_ldap_redirect(
-        "unavailable:8080,localhost:8080,localhost:636")
+    await _test_ldap_redirect("unavailable:8080,localhost:8080,localhost:636")
