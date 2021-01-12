@@ -114,6 +114,10 @@ async def test_ldap_auth_state_attributes(authenticator):
 
 async def test_ldap_auth_redirects(authenticator, mocker):
     # set non-available port
+    correct_server_port = "%s:%s" % (
+        authenticator.server_address,
+        authenticator.server_port,
+    )
     authenticator.server_port = unused_port()
 
     async def _test_ldap_redirect(uri_pattern):
@@ -123,7 +127,9 @@ async def test_ldap_auth_redirects(authenticator, mocker):
         )
         assert authorized["name"] == "fry"
 
-    await _test_ldap_redirect("localhost")
-    await _test_ldap_redirect("unavailable,localhost:636")
-    await _test_ldap_redirect("unavailable, localhost:636")
-    await _test_ldap_redirect("unavailable:8080,localhost:8080,localhost:636")
+    await _test_ldap_redirect(correct_server_port)
+    await _test_ldap_redirect("unavailable,%s" % correct_server_port)
+    await _test_ldap_redirect("unavailable, %s" % correct_server_port)
+    await _test_ldap_redirect(
+        "unavailable:8080,localhost:8080,%s" % correct_server_port
+    )
