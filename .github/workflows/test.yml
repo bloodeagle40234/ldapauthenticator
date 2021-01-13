@@ -18,9 +18,6 @@ defaults:
     #   -o pipefail: Don't mask errors from a command piped into another command
     shell: bash
 
-env:
-  LDAP_HOST: 127.0.0.1
-
 jobs:
   # Run "linter"
   lint:
