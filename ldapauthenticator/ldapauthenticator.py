@@ -319,7 +319,7 @@ class LDAPAuthenticator(Authenticator):
 
         return (user_dn, response[0]["dn"])
 
-    def get_connection(self, userdn, password):
+    def _fake_get_connection(self, userdn, password):
         try:
             return self._get_real_connection(
                 userdn, password, self.server_address, self.server_port
@@ -342,12 +342,11 @@ class LDAPAuthenticator(Authenticator):
                 # re-raise the last caught error
                 raise
 
-    def _get_real_connection(self, userdn, password, server_address, server_port):
+    def get_connection(self, userdn, password):
         server = ldap3.Server(
-            server_address,
-            port=server_port,
+            self.server_address,
+            port=self.server_port,
             use_ssl=self.use_ssl,
-            connect_timeout=self.connect_timeout,
         )
         auto_bind = (
             ldap3.AUTO_BIND_NO_TLS if self.use_ssl else ldap3.AUTO_BIND_TLS_BEFORE_BIND
