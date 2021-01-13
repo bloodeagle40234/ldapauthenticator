@@ -50,6 +50,13 @@ jobs:
           - "3.8"
           - "3.9"
 
+    services:
+      hub-test-ldap:
+        image: rroemhild/test-openldap
+        ports:
+          - 389:10389
+          - 636:10636
+
     steps:
       - uses: actions/checkout@v2
 
@@ -73,8 +80,6 @@ jobs:
           pip install --upgrade pip
           pip install --upgrade --pre -r dev-requirements.txt .
           pip freeze
-          # start LDAP server
-          ci/docker-ldap.sh
 
       - name: Run tests
         # FIXME: --color=yes explicitly set because:
