@@ -58,6 +58,12 @@ jobs:
           - 636:10636
 
     steps:
+      - name: debug
+        run: |
+          sudo docker ps
+          sudo systemctl restart docker
+          sudo docker ps
+
       - uses: actions/checkout@v2
 
       - name: Install Python ${{ matrix.python }}
